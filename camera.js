@@ -1,6 +1,18 @@
 // Get the camera button element
 const cameraButton = document.getElementById('camera-button');
 
+navigator.mediaDevices.getUserMedia({
+  video: { facingMode: { exact: "environment" } }
+}).then(function(stream) {
+  var video = document.querySelector('#video');
+  video.srcObject = stream;
+  video.onloadedmetadata = function(e) {
+    video.play();
+  };
+}).catch(function(err) {
+  console.log("Error: " + err);
+});
+
 // Add a click event listener to the camera button
 cameraButton.addEventListener('click', function() {
   // Get the video element
