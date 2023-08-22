@@ -8,7 +8,7 @@ body {
   
   #camera-container {
     position: relative;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -17,14 +17,18 @@ body {
   }
   
   #video {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
     object-fit: cover;
   }
   
-  #canvas, #stillframe {
+  #canvas,
+  #stillframe {
     display: none;
-    margin: 0 auto;
-    width: 500px;
-    height: 375px;
+    margin: 10px auto;
+    max-width: 500px;
+    height: auto;
   }
   
   #label-container {
