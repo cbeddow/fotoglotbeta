@@ -25,3 +25,4 @@ async function classifyImage(image) {
     // Return the label
     return label;
   }
+  

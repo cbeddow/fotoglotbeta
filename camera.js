@@ -15,42 +15,21 @@ navigator.mediaDevices.getUserMedia({
 
 // Add a click event listener to the camera button
 cameraButton.addEventListener('click', function() {
-  // Get the video element
+  // Get the video, canvas, and stillframe elements
   const video = document.getElementById('video');
-  
-  // Get the canvas element
   const canvas = document.getElementById('canvas');
-  
-  // Get the stillframe element
   const stillframe = document.getElementById('stillframe');
   
-  // Get the clear button element
-  const clearButton = document.getElementById('clear-button');
-  
-  // Get the copy button element
-  const copyButton = document.getElementById('copy-button');
-  
-  // Get the favorite button element
-  const favoriteButton = document.getElementById('favorite-button');
-  
-  // Show the canvas and stillframe elements, hide the video element
+  // Hide the video and canvas elements, show the stillframe element
   video.style.display = 'none';
-  canvas.style.display = 'block';
+  canvas.style.display = 'none';
   stillframe.style.display = 'block';
-  
-  // Get the canvas context and set its dimensions to match the video element
-  const context = canvas.getContext('2d');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  
-  // Draw the current frame of the video onto the canvas
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
   
   // Get the captured image element
   const capturedImage = document.getElementById('captured-image');
   
   // Set the source of the image element to the stillframe
-  capturedImage.src = stillframe.toDataURL('image/jpeg', 1.0);
+  capturedImage.src = stillframe.src;
   
   // Classify the captured image
   classifyImage(capturedImage).then(label => {
@@ -60,9 +39,10 @@ cameraButton.addEventListener('click', function() {
     labelElement.style.display = 'block';
   });
   
-  // Show the "Clear", "Copy", and "Favorite" buttons
+  // Show the "Clear", "Copy", "Back to Camera", and "Favorite" buttons
   clearButton.style.display = 'inline-block';
   copyButton.style.display = 'inline-block';
+  backButton.style.display = 'inline-block';
   favoriteButton.style.display = 'inline-block';
 });
 
@@ -80,9 +60,9 @@ clearButton.addEventListener('click', function() {
   const labelElement = document.getElementById('label');
   labelElement.style.display = 'none';
   
-  // Hide the canvas and stillframe elements, show the video element
+  // Hide the stillframe element, show the video and canvas elements
   video.style.display = 'block';
-  canvas.style.display = 'none';
+  canvas.style.display = 'block';
   stillframe.style.display = 'none';
 });
 
@@ -100,6 +80,28 @@ copyButton.addEventListener('click', function() {
   }, function() {
     console.error('Label copy failed');
   });
+});
+
+// Get the back button element
+const backButton = document.getElementById('back-button');
+
+// Add a click event listener to the back button
+backButton.addEventListener('click', function() {
+  // Get the video, canvas, and stillframe elements
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const stillframe = document.getElementById('stillframe');
+  
+  // Hide the stillframe element, show the video and canvas elements
+  video.style.display = 'block';
+  canvas.style.display = 'block';
+  stillframe.style.display = 'none';
+  
+  // Hide the "Clear", "Copy", "Back to Camera", and "Favorite" buttons
+  clearButton.style.display = 'none';
+  copyButton.style.display = 'none';
+  backButton.style.display = 'none';
+  favoriteButton.style.display = 'none';
 });
 
 // Get the favorite button element

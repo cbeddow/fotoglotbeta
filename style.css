@@ -1,9 +1,4 @@
-#video {
-    display: block;
-    margin: 0 auto;
-    width: 500px;
-    height: 375px;
-  }
+
   #canvas, #stillframe {
     display: none;
     margin: 0 auto;
@@ -26,4 +21,18 @@
   .button:hover {
     background-color: #0069d9;
   }
+
+  #video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    object-fit: cover;
+  }
+  
+  #camera-button {
+    z-index: 1;
+  }
+  
   
