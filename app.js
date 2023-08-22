@@ -1,146 +1,174 @@
 // Get the camera button element
-const cameraButton = document.getElementById("camera-button");
+const cameraButton = document.getElementById('camera-button');
 
-navigator.mediaDevices
-  .getUserMedia({
-    video: { facingMode: { exact: "environment" } },
-  })
-  .then(function (stream) {
-    var video = document.querySelector("#video");
-    video.srcObject = stream;
-    video.onloadedmetadata = function (e) {
-      video.play();
-    };
-  })
-  .catch(function (err) {
-    console.log("Error: " + err);
-  });
+navigator.mediaDevices.getUserMedia({
+  video: { facingMode: { exact: "environment" } }
+}).then(function(stream) {
+  var video = document.querySelector('#video');
+  video.srcObject = stream;
+  video.onloadedmetadata = function(e) {
+    video.play();
+  };
+}).catch(function(err) {
+  console.log("Error: " + err);
+});
 
 // Add a click event listener to the camera button
-cameraButton.addEventListener("click", function () {
+cameraButton.addEventListener('click', function() {
   // Get the video, canvas, and stillframe elements
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
-  const stillframe = document.getElementById("stillframe");
-  const labelElement = document.getElementById("label");
-  const languageSelect = document.getElementById("language-select");
-
-  // Hide the video element, show the stillframe element
-  video.style.display = "none";
-  stillframe.style.display = "block";
-
-  // Capture the image from the video stream
-  canvas
-    .getContext("2d")
-    .drawImage(video, 0, 0, canvas.width, canvas.height);
-  stillframe.setAttribute("src", canvas.toDataURL("image/png"));
-
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const stillframe = document.getElementById('stillframe');
+  
+  // Hide the video and canvas elements, show the stillframe element
+  video.style.display = 'none';
+  canvas.style.display = 'none';
+  stillframe.style.display = 'block';
+  
+  // Get the captured image element
+  const capturedImage = document.getElementById('captured-image');
+  
+  // Set the source of the image element to the stillframe
+  capturedImage.src = stillframe.src;
+  
   // Classify the captured image
-  classifyImage(stillframe).then((label) => {
-    const selectedLanguage = languageSelect.value;
-
-    if (selectedLanguage !== "en") {
-      // Translate the label to the selected language
-      translateText(label, selectedLanguage).then((translation) => {
-        // Display the translated label over the stillframe
+  classifyImage(capturedImage).then(label => {
+    // Display the predicted label over the stillframe
+    const labelElement = document.getElementById('label');
+    labelElement.innerHTML = label;
+    labelElement.style.display = 'block';
+    
+    // Translate the label if it's not in English
+    const selectedLanguage = document.getElementById('language-select').value;
+    if (selectedLanguage !== 'English') {
+      translateLabel(label, 'English', selectedLanguage).then(translation => {
         labelElement.innerHTML = translation;
-        labelElement.style.display = "block";
       });
-    } else {
-      // Display the label without translation
-      labelElement.innerHTML = label;
-      labelElement.style.display = "block";
     }
   });
+  
+  // Show the "Clear", "Back to Camera", and "Favorite" buttons
+  clearButton.style.display = 'inline-block';
+  backButton.style.display = 'inline-block';
+  favoriteButton.style.display = 'inline-block';
+});
 
-  // Show the "Back to Camera" button
-  backToCameraButton.style.display = "inline-block";
+// Get the clear button element
+const clearButton = document.getElementById('clear-button');
+
+// Add a click event listener to the clear button
+clearButton.addEventListener('click', function() {
+  // Get the video, canvas, and stillframe elements
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const stillframe = document.getElementById('stillframe');
+  
+  // Get the label element and hide it
+  const labelElement = document.getElementById('label');
+  labelElement.style.display = 'none';
+  
+  // Hide the stillframe element, show the video and canvas elements
+  video.style.display = 'block';
+  canvas.style.display = 'block';
+  stillframe.style.display = 'none';
+  
+  // Hide the "Clear", "Back to Camera", and "Favorite" buttons
+  clearButton.style.display = 'none';
+  backButton.style.display = 'none';
+  favoriteButton.style.display = 'none';
 });
 
 // Get the back button element
-const backToCameraButton = document.getElementById("back-button");
+const backButton = document.getElementById('back-button');
 
 // Add a click event listener to the back button
-backToCameraButton.addEventListener("click", function () {
+backButton.addEventListener('click', function() {
   // Get the video, canvas, and stillframe elements
-  const video = document.getElementById("video");
-  const stillframe = document.getElementById("stillframe");
-  const labelElement = document.getElementById("label");
-  const languageSelect = document.getElementById("language-select");
-
-  // Hide the stillframe element, show the video element
-  stillframe.style.display = "none";
-  video.style.display = "block";
-
-  // Hide the label and reset the selected language
-  labelElement.style.display = "none";
-  languageSelect.value = "en";
-
-  // Hide the "Back to Camera" button
-  backToCameraButton.style.display = "none";
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const stillframe = document.getElementById('stillframe');
+  
+  // Hide the stillframe element, show the video and canvas elements
+  video.style.display = 'block';
+  canvas.style.display = 'block';
+  stillframe.style.display = 'none';
+  
+  // Hide the "Clear", "Back to Camera", and "Favorite" buttons
+  clearButton.style.display = 'none';
+  backButton.style.display = 'none';
+  favoriteButton.style.display = 'none';
 });
 
-function classifyImage(image) {
-  return new Promise((resolve, reject) => {
-    // Load the MobileNet model
-    tf.loadGraphModel(
-      "https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_100_224/classification/5"
-    )
-      .then((model) => {
-        // Convert the image to a tensor
-        const tensor = tf.browser.fromPixels(image);
+// Get the favorite button element
+const favoriteButton = document.getElementById('favorite-button');
 
-        // Resize the tensor to 224x224 and normalize its values
-        const resized = tf.image
-          .resizeBilinear(tensor, [224, 224])
-          .div(255)
-          .expandDims();
+// Add a click event listener to the favorite button
+favoriteButton.addEventListener('click', function() {
+  // TODO: Add code to favorite the image and label combo
+});
 
-        // Make a prediction with the model
-        model.predict(resized).data().then((prediction) => {
-          // Get the top predicted label
-          const topLabelIndex = Array.from(prediction).indexOf(
-            Math.max(...prediction)
-          );
-          fetch(
-            "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_1.0_224_frozen.json"
-          )
-            .then((res) => res.json())
-            .then((data) => {
-              const label = data[topLabelIndex];
-              resolve(label);
-            })
-            .catch((error) => reject(error));
-        });
-      })
-      .catch((error) => reject(error));
-  });
+async function classifyImage(image) {
+  // Load the InceptionV3 model
+  const model = await tf.loadGraphModel('https://tfhub.dev/google/tfjs-model/imagenet/inception_v3/classification/5');
+  
+  // Convert the image to a tensor
+  const tensor = tf.browser.fromPixels(image);
+  
+  // Resize the tensor to 299x299 and normalize its values
+  const resized = tf.image.resizeBilinear(tensor, [299, 299]).div(255);
+  
+  // Make a prediction with the model
+  const prediction = await model.predict(resized.expandDims());
+  
+  // Get the top predicted label
+  const topLabelIndex = prediction.argMax(1).dataSync()[0];
+  const labels = await fetch('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_1.0_224_frozen.json').then(res => res.json());
+  const label = labels[topLabelIndex];
+  
+  // Clean up
+  tensor.dispose();
+  resized.dispose();
+  prediction.dispose();
+  model.dispose();
+  
+  // Return the label
+  return label;
 }
 
-function translateText(text, language) {
-  return new Promise((resolve, reject) => {
-    // Make a request to OpenAI for translation
-    fetch("https://api.openai.com/v1/engines/translation-codex/completions", {
-      method: "POST",
+async function translateLabel(text, sourceLanguage, targetLanguage) {
+  const apiKey = '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';
+  
+  // Prepare the translation request
+  const translateRequest = {
+    text: text,
+    sourceLanguage: sourceLanguage,
+    targetLanguage: targetLanguage
+  };
+  
+  try {
+    // Send the translation request to OpenAI API
+    const response = await fetch('https://api.openai.com/v1/translate', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer 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",
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
       },
-      body: JSON.stringify({
-        prompt: `Translate the following English text to ${language}: ${text}`,
-        max_tokens: 16,
-        temperature: 0,
-        top_p: 1.0,
-        n: 1,
-        stop: ["\n"],
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        const translations = data.choices[0].text.trim().split("\n");
-        const translation = translations[translations.length - 1];
-        resolve(translation);
-      })
-      .catch((error) => reject(error));
-  });
+      body: JSON.stringify(translateRequest)
+    });
+    
+    if (!response.ok) {
+      throw new Error('Translation request failed');
+    }
+    
+    const translation = await response.json();
+    
+    // Extract the translated text from the response
+    const translatedText = translation.data.translations[0].translation;
+    
+    // Return the translated text
+    return translatedText;
+  } catch (error) {
+    console.error(error);
+    return text; // Return the original text on error
+  }
 }

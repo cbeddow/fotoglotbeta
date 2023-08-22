@@ -5,26 +5,36 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="camera-container">
+  <div class="camera-container">
     <video id="video" autoplay></video>
+    <div class="controls">
+      <div class="language-dropdown">
+        <select id="language-select">
+          <option value="en">English</option>
+          <option value="de">Swiss German</option>
+          <option value="rm">Romansch</option>
+          <option value="it">Italian</option>
+          <option value="hu">Hungarian</option>
+          <option value="ro">Romanian</option>
+          <option value="de">High German</option>
+          <option value="fr">French</option>
+          <option value="es">Spanish</option>
+        </select>
+      </div>
+      <button id="camera-button" class="button">Take Picture</button>
+    </div>
     <canvas id="canvas"></canvas>
     <img id="stillframe">
-    <img id="captured-image">
-    <div id="label-container">
-      <p id="label"></p>
-      <select id="language-select">
-        <option value="en">English</option>
-        <option value="de">German</option>
-        <option value="rm">Romansch</option>
-        <option value="it">Italian</option>
-        <option value="hu">Hungarian</option>
-        <option value="ro">Romanian</option>
-        <option value="fr">French</option>
-        <option value="es">Spanish</option>
-      </select>
+    
+    <div id="overlay">
+      <div id="translated-label"></div>
     </div>
-    <button id="camera-button" class="button">Take Picture</button>
+    
+    <p id="label"></p>
+    <button id="clear-button" class="button">Clear</button>
+    <button id="copy-button" class="button">Copy</button>
     <button id="back-button" class="button">Back to Camera</button>
+    <button id="favorite-button" class="button">Favorite</button>
   </div>
 
   <script src="app.js"></script>
