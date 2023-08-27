@@ -1,98 +1,179 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
+body {
+    margin: 0px;
+    padding: 0px;
+    background: #000;
   }
-  
-  body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f8f8f8;
-  }
-  
-  .camera-container {
-    position: relative;
-    max-width: 500px;
-    background-color: #fff;
-    border-radius: 5px;
-    padding-bottom: 60px;
-  }
-  
-  .controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-  }
-  
-  .language-dropdown {
-    position: relative;
-  }
-  
-  .language-dropdown::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 6px solid #000;
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-  
-  .language-dropdown select {
-    appearance: none;
-    padding: 5px 24px 5px 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    font-size: 14px;
-    color: #333;
-  }
-  
-  button {
-    margin: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: #fff;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0069d9;
-  }
-  
-  canvas, #stillframe {
-    display: none;
-    margin: 0 auto;
-    max-width: 100%;
-    height: auto;
-  }
-  
-  #overlay {
-    position: absolute;
+  #vid_container {
+    position: fixed;
     top: 0;
     left: 0;
+  }
+  #video {
     width: 100%;
     height: 100%;
-    display: none;
-    background-color: rgba(255, 255, 255, 0.8);
-    pointer-events: none;
+    object-fit: cover;
+    z-index: 0;
   }
-  
-  #translated-label {
+  #gui_controls {
+    position: fixed;
+    background-color: #111; /*rgba(255, 0, 0, 0.5);*/
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    bottom: 0;
+  }
+  #img_container {
+    position: fixed;
+    visibility: hidden;
+    background-color: #111; /*rgba(255, 0, 0, 0.5);*/
+    z-index: 3;
+    top: 0;
+  }
+  #video_overlay {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background-color: #111;
+  }
+  button {
+    outline: none;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 36px;
-    font-weight: bold;
-    color: #ffcc00;
+    color: white;
+    display: block;
+    opacity: 1;
+    background: transparent;
+    border: solid 0px #fff;
+    padding: 0;
+    text-shadow: 0px 0px 0px black;
+    background-position: center center;
+    background-repeat: no-repeat;
+    pointer-events: auto;
+    z-index: 3000;
+  }
+
+
+  #submit_button {
+    right: 5%;
+    bottom: 15%;
+    width: 64px;
+    height: 64px;
+    background-image: url('img/check.png');
+    border-radius: 50%;
+    background-color: white;
+    visibility: none;
+  }
+  #takePhotoButton {
+    left: calc(50% - 40px);
+    top: calc(50% - 40px);
+    width: 80px;
+    height: 80px;
+    background-image: url('img/cam.png');
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  #backButton {
+    display: none;
+    left: calc(10%);
+    top: calc(25%);
+    width: 60px;
+    height: 60px;
+    background-image: url('img/back.png');
+    border-radius: 50%;
+    background-color: rgba(255, 2, 2, 0.856);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  #message {
+    position: fixed;
+    top: 5%;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    color: yellow;
+    padding: 10px;
+    display: none;
+    font-size: 48px;
     text-align: center;
   }
+
+  #takePhotoButton:active {
+    background-color: #fff;
+  }
+  
+  
+  
+  @media screen and (orientation: portrait) {
+    /* portrait-specific styles */
+  
+    /* video_container (video) doesn't respect height...
+         so we will fill it in completely in portrait mode
+      */
+  
+  
+    #vid_container {
+      width: 100%;
+      height: 80%;
+    }
+  
+    #gui_controls {
+      width: 100%;
+      height: 20%;
+      left: 0;
+      position: absolute;
+    }
+  
+    #switchCameraButton {
+      left: calc(20% - 32px);
+      top: calc(50% - 32px);
+    }
+  
+  }
+  
+  @media screen and (orientation: landscape) {
+    #vid_container {
+      width: 80%;
+      height: 100%;
+    }
+  
+    #vid_container.left {
+      left: 20%;
+    }
+  
+    /* we default to right */
+    #gui_controls {
+      width: 20%;
+      height: 100%;
+      right: 0;
+      position: absolute;
+    }
+  
+    /* for the lefties */
+    #gui_controls.left {
+      left: 0;
+    }
+  
+    #switchCameraButton {
+      left: calc(50% - 32px);
+      top: calc(18% - 32px);
+    }
+  
+    #toggleFullScreenButton {
+      left: calc(50% - 32px);
+      top: calc(82% - 32px);
+    }
+  }
+  .floatTL{
+   position:absolute;
+      top:calc(50% - 32px);
+      left:calc(50% - 32px);
+  }
+  
